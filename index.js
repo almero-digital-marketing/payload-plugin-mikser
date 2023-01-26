@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default function mikserPlugin({ mikser, token }) {
+export default function mikserPlugin({ mikser, token, uri }) {
     return  (incomingConfig) => {
         const config = {
             ...incomingConfig,
@@ -131,6 +131,9 @@ export default function mikserPlugin({ mikser, token }) {
                     method: 'post',
                     url,
                     headers,
+                    data: {
+                        uri: uri || incomingConfig.serverURL
+                    }
                 })
             } catch (err) {
                 payload?.logger.error('Mikser api schedule error: %s %s', url, err.message)
