@@ -1,9 +1,8 @@
 {
   "name": "payload-plugin-mikser",
-  "version": "1.1.3",
+  "version": "1.1.6",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,6 +17,5 @@
   },
   "homepage": "https://github.com/almero-digital-marketing/payload-plugin-mikser#readme",
   "dependencies": {
-    "axios": "^1.2.4"
   }
 }

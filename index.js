@@ -1,11 +1,12 @@
-import axios from 'axios'
-
-export default function mikserPlugin({ mikser, token, uri }) {
+module.exports = function mikserPlugin({ mikser, token, uri }) {
     return  (incomingConfig) => {
         const config = {
             ...incomingConfig,
             collections: (incomingConfig.collections || []).map((collection) => {
-                const headers = {}
+                const headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
                 const url = `${mikser}/api/webhooks/${collection.slug}`
                 if (token) {
                     headers['Authorization'] = `Bearer ${token}`
@@ -17,11 +18,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     if (operation == 'create') {
                         try {
                             payload?.logger.info('Mikser api create: %s %s', url, doc.id)
-                            await axios.request({
-                                method: 'post',
-                                url,
+                            await fetch(url, {
+                                method: 'POST',
                                 headers,
-                                data: doc
+                                body: JSON.stringify(doc)
                             })
                         } catch (err) {
                             payload?.logger.error('Mikser api create error: %s %s %s', url, doc.id, err.message)
@@ -29,11 +29,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     } else {
                         try {
                             payload?.logger.info('Mikser api update: %s %s', url, doc.id)
-                            await axios.request({
-                                method: 'put',
-                                url,
+                            await fetch(url, {
+                                method: 'PUT',
                                 headers,
-                                data: doc
+                                body: JSON.stringify(doc)
                             })
                         } catch (err) {
                             payload?.logger.error('Mikser api update error: %s %s %s', url, doc.id, err.message)
@@ -46,11 +45,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     const { payload } = req
                     try {
                         payload?.logger.info('Mikser api delete: %s %s', url, doc.id)
-                        await axios.request({
-                            method: 'delete',
-                            url,
+                        await fetch(url, {
+                            method: 'DELETE',
                             headers,
-                            data: doc
+                            body: JSON.stringify(doc)
                         })
                     } catch (err) {
                         payload?.logger.error('Mikser api delete error: %s %s %s', url, doc.id, err.message)
@@ -60,7 +58,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                 return collection
             }),
             globals: (incomingConfig.globals || []).map((global) => {
-                const headers = {}
+                const headers = {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
                 const url = `${mikser}/api/webhooks/global-${global.slug}`
                 if (token) {
                     headers['Authorization'] = `Bearer ${token}`
@@ -72,11 +73,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     if (operation == 'create') {
                         try {
                             payload?.logger.info('Mikser api create: %s %s', url, doc.id)
-                            await axios.request({
-                                method: 'post',
-                                url,
+                            await fetch(url, {
+                                method: 'POST',
                                 headers,
-                                data: doc
+                                body: JSON.stringify(doc)
                             })
                         } catch (err) {
                             payload?.logger.error('Mikser api create error: %s %s %s', url, doc.id, err.message)
@@ -84,11 +84,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     } else {
                         try {
                             payload?.logger.info('Mikser api update: %s %s', url, doc.id)
-                            await axios.request({
-                                method: 'put',
-                                url,
+                            await fetch(url, {
+                                method: 'PUT',
                                 headers,
-                                data: doc
+                                body: JSON.stringify(doc)
                             })
                         } catch (err) {
                             payload?.logger.error('Mikser api update error: %s %s %s', url, doc.id, err.message)
@@ -101,11 +100,10 @@ export default function mikserPlugin({ mikser, token, uri }) {
                     const { payload } = req
                     try {
                         payload?.logger.info('Mikser api delete: %s %s', url, doc.id)
-                        await axios.request({
-                            method: 'delete',
-                            url,
+                        await fetch(url, {
+                            method: 'DELETE',
                             headers,
-                            data: doc
+                            body: JSON.stringify(doc)
                         })
                     } catch (err) {
                         payload?.logger.error('Mikser api delete error: %s %s %s', url, doc.id, err.message)
@@ -121,19 +119,21 @@ export default function mikserPlugin({ mikser, token, uri }) {
             await onInit(payload)
 
             const url = `${mikser}/api/webhooks/schedule`
-            const headers = {}
+            const headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`
             }
             try {
                 payload?.logger.info('Mikser api schedule: %s', url)
-                await axios.request({
-                    method: 'post',
-                    url,
+                await fetch(url, {
+                    method: 'POST',
                     headers,
-                    data: {
+                    body: JSON.stringify({
                         uri: uri || incomingConfig.serverURL
-                    }
+                    })
                 })
             } catch (err) {
                 payload?.logger.error('Mikser api schedule error: %s %s', url, err.message)
