@@ -1,11 +1,15 @@
 {
   "name": "payload-plugin-mikser",
-  "version": "1.1.6",
+  "version": "2.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild index.js --bundle --platform=node --sourcemap --outfile=dist/index.js",
+    "prepare": "npm run build"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/almero-digital-marketing/payload-plugin-mikser.git"
@@ -17,5 +21,9 @@
   },
   "homepage": "https://github.com/almero-digital-marketing/payload-plugin-mikser#readme",
   "dependencies": {
+    "mikser-io-webhooks": "^1.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.5"
   }
 }
