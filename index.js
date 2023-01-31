@@ -1,10 +1,10 @@
 
 import useMikserWebhooks from 'mikser-io-webhooks'
-import useMikserSocket from 'mikser-io-socket'
+import useMikserSubscribe from 'mikser-io-subscribe'
 
-let mikserWebhooks, mikserSocket
+let mikserWebhooks, mikserSubscribe
 
-export default ({ url, token, uri }) => {
+export default ({ url, token, uri, port }) => {
     return (incomingConfig) => {      
         const config = {
             ...incomingConfig,
@@ -14,18 +14,18 @@ export default ({ url, token, uri }) => {
                 collection.hooks.afterChange ||= []
                 collection.hooks.afterChange.push(async ({ doc, req, operation }) => {
                     if (operation == 'create') {
-                        mikserWebhooks.created(collection.slug, doc)
-                        mikserSocket.created(collection.slug, doc)
+                        await mikserWebhooks.created(collection.slug, doc)
+                        mikserSubscribe.created(collection.slug, doc)
                     } else if (operation == 'update') {
-                        mikserWebhooks.updated(collection.slug, doc)
-                        mikserSocket.updated(collection.slug, doc)
+                        await mikserWebhooks.updated(collection.slug, doc)
+                        mikserSubscribe.updated(collection.slug, doc)
                     }
                 })
     
                 collection.hooks.afterDelete ||= []
                 collection.hooks.afterDelete.push(async ({ doc, req }) => {
-                    mikserWebhooks.deleted(collection.slug, doc)
-                    mikserSocket.deleted(collection.slug, doc)
+                    await mikserWebhooks.deleted(collection.slug, doc)
+                    mikserSubscribe.deleted(collection.slug, doc)
                 })
     
                 return collection
@@ -34,8 +34,8 @@ export default ({ url, token, uri }) => {
                 global.hooks ||= {}
                 global.hooks.afterChange ||= []
                 global.hooks.afterChange.push(async ({ doc, req }) => {
-                    mikserWebhooks.updated('global-' + collection.slug, doc)
-                    mikserSocket.updated('global-' + collection.slug, doc)
+                    await mikserWebhooks.updated('global-' + collection.slug, doc)
+                    mikserSubscribe.updated('global-' + collection.slug, doc)
                 })
     
                 return global
@@ -49,8 +49,7 @@ export default ({ url, token, uri }) => {
             mikserWebhooks = useMikserWebhooks({ url, token, logger: payload?.logger })
             await mikserWebhooks.trigger(uri || incomingConfig.serverURL)
 
-            mikserSocket = useMikserSocket({ url, token, server: payload.server, logger: payload?.logger })
-            await mikserSocket.trigger(uri || incomingConfig.serverURL)
+            mikserSubscribe = useMikserSubscribe({ url, token, port, logger: payload?.logger })
         }
         return config
     }
