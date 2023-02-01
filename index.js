@@ -14,18 +14,18 @@ export default ({ url, token, uri, port }) => {
                 collection.hooks.afterChange ||= []
                 collection.hooks.afterChange.push(async ({ doc, req, operation }) => {
                     if (operation == 'create') {
-                        await mikserWebhooks.created(collection.slug, doc)
-                        mikserSubscribe.created(collection.slug, doc)
+                        await mikserWebhooks?.created(collection.slug, doc)
+                        mikserSubscribe?.created(collection.slug, doc)
                     } else if (operation == 'update') {
-                        await mikserWebhooks.updated(collection.slug, doc)
-                        mikserSubscribe.updated(collection.slug, doc)
+                        await mikserWebhooks?.updated(collection.slug, doc)
+                        mikserSubscribe?.updated(collection.slug, doc)
                     }
                 })
     
                 collection.hooks.afterDelete ||= []
                 collection.hooks.afterDelete.push(async ({ doc, req }) => {
-                    await mikserWebhooks.deleted(collection.slug, doc)
-                    mikserSubscribe.deleted(collection.slug, doc)
+                    await mikserWebhooks?.deleted(collection.slug, doc)
+                    mikserSubscribe?.deleted(collection.slug, doc)
                 })
     
                 return collection
@@ -34,8 +34,8 @@ export default ({ url, token, uri, port }) => {
                 global.hooks ||= {}
                 global.hooks.afterChange ||= []
                 global.hooks.afterChange.push(async ({ doc, req }) => {
-                    await mikserWebhooks.updated('global-' + collection.slug, doc)
-                    mikserSubscribe.updated('global-' + collection.slug, doc)
+                    await mikserWebhooks?.updated('globals', doc)
+                    mikserSubscribe?.updated('globals', doc)
                 })
     
                 return global
@@ -47,9 +47,9 @@ export default ({ url, token, uri, port }) => {
             await onInit(payload)
     
             mikserWebhooks = useMikserWebhooks({ url, token, logger: payload?.logger })
-            await mikserWebhooks.trigger(uri || incomingConfig.serverURL)
-
             mikserSubscribe = useMikserSubscribe({ url, token, port, logger: payload?.logger })
+            
+            await mikserWebhooks?.trigger(uri || incomingConfig.serverURL)
         }
         return config
     }
