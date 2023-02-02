@@ -1,6 +1,6 @@
 {
   "name": "payload-plugin-mikser",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/almero-digital-marketing/payload-plugin-mikser#readme",
   "dependencies": {
     "mikser-io-subscribe": "^2.0.1",
-    "mikser-io-webhooks": "^1.0.5"
+    "mikser-io-webhooks": "^1.0.6"
   },
   "devDependencies": {
     "esbuild": "^0.17.5"
